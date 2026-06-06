@@ -1,25 +1,4 @@
----
-updated: 2026-06-04
-sources: [legado/analytics/plano_03_analises_dashboard.md, legado/analytics/plano_15_pacote_mvp_dashboard.md, wiki/wiki/concepts/guia-analista-dados-powerbi.md, wiki/wiki/concepts/regras-kpis-dashboard.md, Power BI MCP/TMDL export 2026-06-04]
-tags: [dashboard, power-bi]
-status: aprovada
----
-
 # Aba 01 — Visao Executiva do Piso
-
-## Status
-
-Aba finalizada no Power BI Desktop em 2026-06-04 e validada por print enviado pelo usuario.
-
-Estado do PBIX inspecionado via MCP:
-
-- Arquivo aberto: `BI - BrokerLab`.
-- Modelo: Import, database `417607df-807b-4816-930f-7a53c6e24ecd`.
-- Tabelas no modelo: 41.
-- Relacionamentos no modelo: 40.
-- Medidas na tabela `Medidas`: 42.
-- Pasta principal das medidas da aba: `Visao Executiva`.
-- Filtro de mes da pagina: `gold dim_tempo[year_month]`, validado para abril/2026.
 
 ## Objetivo
 
@@ -52,7 +31,7 @@ Esses relacionamentos garantem que o slicer de mes filtre cards, gauge, evolucao
 
 ## Filtros da pagina
 
-Filtros implementados/recomendados:
+Filtros implementados:
 
 | Filtro | Campo | Observacao |
 |---|---|---|
@@ -91,12 +70,6 @@ Gauge visual de meta mensal:
 - meta: `Team Month Target Deposit USD`;
 - status: `Status Meta`;
 - arco customizado: `Gauge HTML`.
-
-Regra de cor da wiki:
-
-- `>= 100%`: verde;
-- `80% a 99,9%`: amarelo;
-- `< 80%`: vermelho.
 
 ### Evolucao diaria
 
@@ -138,8 +111,6 @@ Tabela/matriz com:
 Uso: identificar os agentes que mais puxam o resultado mensal. O rank usa `Agent Month Rank Net Deposit`.
 
 ## Medidas DAX atuais no PBIX
-
-As medidas abaixo foram extraidas do PBIX via Power BI MCP/TMDL em 2026-06-04.
 
 ### Visao Executiva
 
@@ -260,9 +231,6 @@ RANKX (
 )
 ```
 
-> [!note] Verificar futuramente
-> `Agent Month Target %` usa `SUM('gold vw_agent_month_performance'[target_pct_deposit])`, coluna SQL em escala 0-100. Esta medida esta aderente ao visual atual, mas a regra global recomenda recalcular percentuais com `DIVIDE` quando o percentual precisar ser combinado em totais.
-
 ### Agente Dia
 
 ```DAX
@@ -296,27 +264,6 @@ DIVIDE ( [Agent Day Net Deposit USD], [Agent Day Target Deposit USD], 0 )
 | `Char Gap Run Rate` | Sinal textual `+`, vazio ou `-` conforme `Team Month Gap Run Rate USD`. |
 | `Char Gap Target Deposit` | Sinal textual auxiliar baseado em `Team Month Target Deposit %`. |
 
-As formulas completas dessas medidas HTML ficam no PBIX/TMDL. Elas dependem das medidas `Agent Day *`, `Team Month *` e da tabela `gold vw_agent_day_performance`.
-
-## Validacao executada via MCP
-
-Consulta DAX executada em 2026-06-04 com filtro `gold dim_tempo[year_month] = "2026-04"`:
-
-| Indicador | Valor validado |
-|---|---:|
-| Net Deposit | 1.191.161,22 |
-| Meta Deposit | 1.400.000,00 |
-| Atingimento Meta | 85,08% |
-| Run Rate | 1.310.277,35 |
-| Gap Run Rate | -119.116,13 |
-| Falta para Meta | 208.838,78 |
-| Carteira | 1.849 |
-| Operaram Hoje | 220 |
-| Pendentes Hoje | 1.629 |
-| % Carteira Operando Hoje | 11,90% |
-
-Esses valores batem com o print final da pagina.
-
 ## Decisoes de apresentacao
 
 - `Net Deposit Mes` e o KPI principal, porque `net_deposit = deposit - withdrawal` e a regra oficial de meta.
@@ -324,15 +271,3 @@ Esses valores batem com o print final da pagina.
 - `Falta para Meta` substitui o label generico `Gap Meta` no visual, para evitar ambiguidade de sinal.
 - `Unique Trading` aparece como apoio operacional no ranking; nao substitui o unique oficial nem vira meta oficial enquanto o cliente nao fornecer metas de trade/unique.
 - O bloco de filtros pode incluir dimensoes operacionais da call list, mas status comerciais nao excluem carteira por regra MVP.
-
-## Proxima pagina
-
-Com a Aba 01 finalizada, o projeto segue para [[02-performance-por-agente]].
-
-## Ver tambem
-
-- [[powerbi-semantic-model]]
-- [[powerbi-dim-tempo-relacionamento]]
-- [[guia-analista-dados-powerbi]]
-- [[metas-run-rate]]
-- [[call-list]]

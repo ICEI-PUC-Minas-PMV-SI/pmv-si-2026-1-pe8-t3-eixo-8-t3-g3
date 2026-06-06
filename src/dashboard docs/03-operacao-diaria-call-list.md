@@ -1,14 +1,4 @@
----
-updated: 2026-06-06
-sources: [wiki/wiki/dashboard/02-performance-por-agente.md, wiki/wiki/entities/powerbi-semantic-model.md, wiki/wiki/indicators/call-list.md, Power BI MCP 2026-06-06, prints do usuario 2026-06-06]
-tags: [dashboard, power-bi, call-list, trading, kpi]
-status: validada-tecnica
----
-
 # Aba 03 — Operação Diária / Call List
-
-> [!note] Estado atual (2026-06-06)
-> Aba **finalizada e aprovada** em 2026-06-06. Montada no Power BI com dados reais via DAX queries ao modelo `BI - BrokerLab`. Print de aceite recebido pelo usuário. Mockup HTML gerado em `artefatos/dashboard/aba03-operacao-diaria-call-list-mockup.html`. Medidas HTML Content criadas: `Call List Coverage Bar HTML`, `Call List Pendentes por Agente HTML`, `Call List Por Prioridade HTML`, `Call List Lead Status HTML`.
 
 ## Objetivo
 
@@ -27,10 +17,6 @@ Perguntas cobertas:
 - Onde estão os pendentes de maior prioridade?
 - Há concentração de pendência em algum agente, país, lead status ou nível?
 - Existem clientes com saldo/equity relevante ainda sem trade hoje?
-
-## Layout implementado
-
-Estrutura final observada no print de aceite de 2026-06-06:
 
 ### Topbar
 
@@ -153,59 +139,10 @@ Cor: >= 80% cinza-azul | >= 20% amarelo | resto cinza-azul
 Variáveis: _W_Total, _W_Label, _W_Value, _H_Bar, _Gap, _Row_Margin, _Font_*
 ```
 
-## Dados reais validados (abr/2026, todos os agentes)
-
-| Métrica | Valor |
-|---|---|
-| Carteira | 1.849 |
-| Operaram hoje | 220 (11,9%) |
-| Pendentes hoje | 1.629 (88,1%) |
-| Pendentes Alta | 22 |
-| Clientes c/ Saldo | 1.429 |
-| Balance Total | $252,46 Mi |
-| Equity Total | $983,99 Mi |
-| Último Dep. Total | $1,52 Mi |
-
-**Top 6 agentes por pendentes:** James Lago 125 · Alessio Ferri 116 · Mickael Vian 87 · Beatriz Mariano 86 · Angelo Costa 84 · Brian Lima 81
-
-**Distribuição prioridade (pendentes):** Alta 22 · Média 89 · Baixa 1.518
-
-**Lead status (pendentes):** Telemarketing 1.412 · Callback 120 · No Answer 1 67 · New1 20 · Test 7
-
-## Regra de carteira MVP
+## Regra de carteira
 
 ```text
 carteira         = clientes atribuídos ao Retention Owner
 operaram hoje    = clientes da carteira com operação CMD 0/1 aberta hoje
 pendentes hoje   = carteira − operaram hoje
 ```
-
-Contas bloqueadas, readonly, desabilitadas ou deletadas não são excluídas no MVP.
-
-> **Importante:** o refresh do Power BI é Import/batch. Esta página não é real-time até existir fluxo em Grafana ou refresh adequado.
-
-## Nota sobre TREATAS
-
-As medidas `Call List *` usam `TREATAS(VALUES('gold dim_agente'[agente_sk]), 'gold vw_call_list_today'[agente_sk])` para propagar o filtro do slicer de agente para a view, enquanto não existir relacionamento formal entre `dim_agente` e `vw_call_list_today` no modelo semântico. Ver [[powerbi-semantic-model]].
-
-## Artefatos gerados
-
-| Artefato | Caminho |
-|---|---|
-| Mockup HTML | `artefatos/dashboard/aba03-operacao-diaria-call-list-mockup.html` |
-| Medidas DAX | Criadas diretamente no Power BI Desktop (pasta `Call List` e `HTML Content`) |
-
-## Validações executadas
-
-- ✅ `Carteira (1849) = Operaram (220) + Pendentes (1629)`
-- ✅ Dados validados via DAX queries diretas ao modelo via MCP (`localhost:57023`)
-- ✅ Print de aceite visual recebido pelo usuário em 2026-06-06
-
-## Ver também
-
-- [[02-performance-por-agente]]
-- [[04-rankings-competicao]]
-- [[call-list]]
-- [[powerbi-semantic-model]]
-- [[guia-analista-dados-powerbi]]
-- [[progresso-abas]]

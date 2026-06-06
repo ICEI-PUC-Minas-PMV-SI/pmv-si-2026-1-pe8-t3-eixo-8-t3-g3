@@ -1,14 +1,4 @@
----
-updated: 2026-06-05
-sources: [wiki/wiki/dashboard/01-visao-executiva-piso.md, wiki/wiki/entities/powerbi-semantic-model.md, Power BI MCP 2026-06-05, prints do usuario 2026-06-05]
-tags: [dashboard, power-bi, kpi, metas, run-rate, call-list]
-status: validada-tecnica
----
-
-# Aba 02 — Performance por Agente
-
-> [!note] Estado atual
-> Aba montada no Power BI em 2026-06-05 e revisada por prints do usuário. A página segue o padrão visual dark BrokerLab aprovado na [[01-visao-executiva-piso]], mas com foco individual por agente. Status operacional atual: **revisada visualmente**, aguardando ajustes finos/aceite final antes de marcar como aprovada.
+# Aba 02 — Visao Performance por Agente
 
 ## Objetivo
 
@@ -27,8 +17,6 @@ Perguntas cobertas:
 
 ## Layout implementado
 
-Estrutura final observada nos prints de 2026-06-05:
-
 | Área | Conteúdo |
 |---|---|
 | Cabeçalho | Logo BrokerLab, título `Performance Agentes`, slicer de agente e botão de filtros. |
@@ -43,7 +31,7 @@ Estrutura final observada nos prints de 2026-06-05:
 
 ## Filtros
 
-| Filtro | Campo recomendado | Status |
+| Filtro | Campo | Status |
 |---|---|---|
 | Mês referência | `gold dim_tempo[year_month]` | Reutiliza relação validada com views de performance. |
 | Agente | `gold dim_agente[agent_name]` | Deve ser single-select na leitura individual. |
@@ -53,12 +41,6 @@ Estrutura final observada nos prints de 2026-06-05:
 | Pendência hoje | `gold vw_call_list_today[is_pending_today]` | Usado na tabela de pendentes. |
 | Prioridade | `gold vw_call_list_today[priority_label]` | Provisório até regra oficial de score/priorização. |
 
-### Observação de modelagem
-
-O slicer de agente deve usar `gold dim_agente`. As medidas novas da Aba 02 aplicam o filtro da dimensão sobre as views com `TREATAS`, porque `gold vw_agent_month_performance`, `gold vw_agent_day_performance` e `gold vw_call_list_today` não possuem relacionamento direto documentado com `gold dim_agente`.
-
-Recomendação futura: avaliar relacionamento direto `gold dim_agente[agente_sk] -> views[agente_sk]` para simplificar DAX, mantendo cuidado com direção de filtro e cardinalidade.
-
 ## Medidas por visual
 
 ### Card `Performance Agente`
@@ -67,7 +49,7 @@ Recomendação futura: avaliar relacionamento direto `gold dim_agente[agente_sk]
 |---|---|
 | Nome | `gold dim_agente[agent_name]` |
 | Nível | `gold dim_agente[agent_level]` |
-| País/segmento exibido | Campo de apoio disponível no visual; nos prints aparece como `Italy`/`Brazil`. |
+| País/segmento exibido | Exemplo: `Italy`/`Brazil`. |
 | Status | `gold dim_agente[is_active]` ou label visual equivalente. |
 | Rank | `Agent Month Rank Net Deposit` |
 | Net Deposit Hoje | `Agent Day Net Deposit USD` |
@@ -137,7 +119,7 @@ Variáveis de ajuste dentro da medida:
 | `RingStroke` | Espessura do anel. |
 | `InnerRadius` | Raio do miolo/área interna. |
 
-Versão validada em 2026-06-05:
+Versão validada:
 
 - `DonutSize = "150px"`
 - `CenterFontSize = "24px"`
@@ -175,72 +157,3 @@ Colunas:
 | DT Último Dep. | `last_deposit_date` |
 | $ Último Dep. | `last_deposit_amount_usd` |
 | Prioridade | `priority_label` |
-
-Melhoria visual recomendada: transformar `Prioridade` em badge/chip, com vermelho para alta, neutro para baixa e âmbar para média.
-
-## Medidas criadas/normalizadas para a Aba 02
-
-As medidas foram criadas/atualizadas em `Medidas`, respeitando a convenção:
-
-```text
-<alias tabela> <medida> <formato>
-```
-
-Principais pastas:
-
-| Pasta | Escopo |
-|---|---|
-| `Agent Month` | KPIs mensais por agente: net, deposit, withdrawal, target, target %, run rate, gaps, unique, trades, volume, PnL, rank e labels. |
-| `Agent Day` | KPIs diários/acumulados: deposit, withdrawal, net, meta diária, acumulado, clientes operaram, total trades e target trade. |
-| `Call List` | Carteira, operaram hoje, pendentes hoje, percentual operando, balance e equity. |
-| `HTML Content` | Medidas HTML para rosca/progresso/funil/strip. |
-
-HTMLs disponíveis:
-
-| Medida | Uso |
-|---|---|
-| `Agent Month Target Donut HTML` | Rosca de atingimento da meta, usada no card direito superior. |
-| `Agent Month Progress HTML` | Barra/progresso mensal; mantida como alternativa. |
-| `Agent Month Status Card HTML` | Card completo de status/rank; mantido como alternativa. |
-| `Call List Funnel HTML` | Funil carteira/operaram/pendentes; mantido como alternativa. |
-| `Agent Month KPI Strip HTML` | Strip compacto de net, unique, trades e pendentes; mantido como alternativa. |
-
-## Validação técnica
-
-Validações via Power BI MCP/DAX em 2026-06-05:
-
-| Contexto | Resultado |
-|---|---|
-| Abril/2026 consolidado | Medidas retornaram valores compatíveis com referência da Aba 01 para net/meta/carteira. |
-| `Alessio Ferri` | Rosca validada com `284,41%`, anel verde cheio e valor central correto. |
-| `Arthur Moreau` | Rosca validada com `33,19%`, anel vermelho parcial e valor central correto. |
-
-Valores de referência observados nos prints:
-
-| Agente | Net mês | Meta | Atingimento | Run Rate | Gap Run Rate | Carteira | Operaram | Pendentes |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Alessio Ferri | `$142,20 Mil` | `$50,00 Mil` | `284,41%` | `$156,42 Mil` | `($14,22 Mil)` | `122` | `6` | `116` |
-| Arthur Moreau | `$16,59 Mil` | `$50,00 Mil` | `33,19%` | `$18,25 Mil` | `($1,66 Mil)` | `69` | `17` | `52` |
-
-## Feedback visual aplicado
-
-- Rosca substituiu o velocímetro para diferenciar a Aba 02 da Aba 01.
-- Card `Atingimento da Meta` foi simplificado; a medida HTML final mantém apenas donut e percentual central.
-- Ajustado espaçamento do valor central na rosca com `CenterValueScale`, `RingStroke` e `InnerRadius`.
-- Layout geral aprovado como coerente com a Aba 01: dark BrokerLab, cards compactos, ícones amarelos, tabela operacional e gráfico diário central.
-
-## Pendências e próximos ajustes
-
-- Ajustar pequenos acabamentos visuais conforme revisão final: cor verde da rosca pode ser suavizada se competir com os demais elementos.
-- Avaliar badge/chip para `Prioridade` na tabela.
-- Confirmar se metas de trade/unique serão preenchidas oficialmente no template; a estrutura já está preparada.
-- Avaliar relacionamento direto de `gold dim_agente` com as views de agente/call list para reduzir uso de `TREATAS`.
-- Fazer validação final por print antes de marcar a Aba 02 como `Aprovada`.
-
-## Ver também
-
-- [[01-visao-executiva-piso]]
-- [[powerbi-semantic-model]]
-- [[powerbi-dim-tempo-relacionamento]]
-- [[guia-analista-dados-powerbi]]
-- [[call-list]]
