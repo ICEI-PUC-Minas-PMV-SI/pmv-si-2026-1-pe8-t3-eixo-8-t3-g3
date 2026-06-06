@@ -1,4 +1,4 @@
-# Aba 02 — Visao Performance por Agente
+# Aba 02 — Performance por Agente
 
 ## Objetivo
 
@@ -31,7 +31,7 @@ Perguntas cobertas:
 
 ## Filtros
 
-| Filtro | Campo | Status |
+| Filtro | Campo recomendado | Status |
 |---|---|---|
 | Mês referência | `gold dim_tempo[year_month]` | Reutiliza relação validada com views de performance. |
 | Agente | `gold dim_agente[agent_name]` | Deve ser single-select na leitura individual. |
@@ -49,13 +49,13 @@ Perguntas cobertas:
 |---|---|
 | Nome | `gold dim_agente[agent_name]` |
 | Nível | `gold dim_agente[agent_level]` |
-| País/segmento exibido | Exemplo: `Italy`/`Brazil`. |
+| País/segmento exibido | Campo de apoio disponível no visual; nos prints aparece como `Italy`/`Brazil`. |
 | Status | `gold dim_agente[is_active]` ou label visual equivalente. |
 | Rank | `Agent Month Rank Net Deposit` |
 | Net Deposit Hoje | `Agent Day Net Deposit USD` |
 | Atingimento da Meta | `Agent Month Target Deposit %` |
 | Carteira Operada Hoje | `Call List Carteira Operando Hoje %` |
-| Status Ritmo | `Agent Month Gap Run Rate Label TXT` |
+| Status Ritmo | `Agent Month Gap Run Rate Label TXT` existe, mas esta na pasta `Aux`; para logica analitica, preferir `Agent Month Gap Run Rate USD` ou uma medida nova fora de `Aux`. |
 
 ### Card `Net Deposit`
 
@@ -71,7 +71,7 @@ Perguntas cobertas:
 
 | Card | Medida principal | Apoio/tooltip |
 |---|---|---|
-| `Run Rate` | `Agent Month Run Rate USD` | `Agent Month Gap Run Rate USD`, `Agent Month Gap Run Rate Label TXT` |
+| `Run Rate` | `Agent Month Run Rate USD` | `Agent Month Gap Run Rate USD`; labels auxiliares ficam fora do escopo analitico. |
 | `Trades Mês` | `Agent Month Total Trades QTD` | `Agent Month Trading Client Days QTD`, `Agent Day Total Trades QTD` |
 | `Unique Deposit` | `Agent Month Unique Deposit QTD` | `Agent Month Target Unique QTD`, `Agent Month Target Unique %` |
 
@@ -119,8 +119,6 @@ Variáveis de ajuste dentro da medida:
 | `RingStroke` | Espessura do anel. |
 | `InnerRadius` | Raio do miolo/área interna. |
 
-Versão validada:
-
 - `DonutSize = "150px"`
 - `CenterFontSize = "24px"`
 - `CenterValueScale = "0.82"`
@@ -157,3 +155,22 @@ Colunas:
 | DT Último Dep. | `last_deposit_date` |
 | $ Último Dep. | `last_deposit_amount_usd` |
 | Prioridade | `priority_label` |
+
+Principais pastas:
+
+| Pasta | Escopo |
+|---|---|
+| `Agent Month` | KPIs mensais por agente: net, deposit, withdrawal, target, target %, run rate, gaps, unique, trades, volume, PnL, rank e labels. |
+| `Agent Day` | KPIs diários/acumulados: deposit, withdrawal, net, meta diária, acumulado, clientes operaram, total trades e target trade. |
+| `Call List` | Carteira, operaram hoje, pendentes hoje, percentual operando, balance e equity. |
+| `HTML Content` | Medidas HTML para rosca/progresso/funil/strip. |
+
+HTMLs disponíveis:
+
+| Medida | Uso |
+|---|---|
+| `Agent Month Target Donut HTML` | Rosca de atingimento da meta, usada no card direito superior. |
+| `Agent Month Progress HTML` | Barra/progresso mensal; mantida como alternativa. |
+| `Agent Month Status Card HTML` | Card completo de status/rank; mantido como alternativa. |
+| `Call List Funnel HTML` | Funil carteira/operaram/pendentes; mantido como alternativa. |
+| `Agent Month KPI Strip HTML` | Strip compacto de net, unique, trades e pendentes; mantido como alternativa. |

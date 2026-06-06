@@ -31,8 +31,8 @@ Perguntas cobertas:
 | Carteira | `Call List Carteira Clientes QTD` | 1.849 |
 | Operaram | `Call List Clientes Operaram Hoje QTD` | 220 |
 | Pendentes | `Call List Clientes Pendentes Hoje QTD` | 1.629 |
-| Pend. Alta | `Call List Pendentes Alta QTD` | 22 |
-| C/ Saldo | `Call List Clientes Com Saldo QTD` | 1.429 |
+| Pend. Alta | `Call List Clientes Pendentes Alta Prioridade QTD` | 22 |
+| C/ Saldo | `Call List Clientes c Saldo QTD` | 1.429 |
 | Balance Total | `Call List Balance USD` | $252,46 Mi |
 | Equity Total | `Call List Equity USD` | $984,00 Mi |
 
@@ -65,46 +65,21 @@ Perguntas cobertas:
 | Tabela | Uso |
 |---|---|
 | `gold vw_call_list_today` | Fonte central: carteira, operaram, pendentes, saldo/equity, lead status, prioridade e flags operacionais. |
-| `gold dim_agente` | Slicers de equipe, agente, nível e status; TREATAS para propagar filtro. |
+| `gold dim_agente` | Slicers de equipe, agente, nível e status; relacionamento ativo com `gold vw_call_list_today[agente_sk]` no modelo atual. |
 
 ## Medidas criadas nesta sessão
 
 ### Medidas escalares (pasta `Call List`)
 
 ```DAX
-Call List Pendentes Alta QTD =
-CALCULATE (
-    COUNTROWS ( 'gold vw_call_list_today' ),
-    'gold vw_call_list_today'[is_pending_today] = TRUE (),
-    'gold vw_call_list_today'[priority_label] = "Alta",
-    TREATAS (
-        VALUES ( 'gold dim_agente'[agente_sk] ),
-        'gold vw_call_list_today'[agente_sk]
-    )
-)
+Call List Clientes Pendentes Alta Prioridade QTD =
+CALCULATE ( [Call List Carteira Clientes QTD], 'gold vw_call_list_today'[is_pending_today]=TRUE() && 'gold vw_call_list_today'[priority_label]="Alta")
 
-Call List Clientes Com Saldo QTD =
-CALCULATE (
-    COUNTROWS ( 'gold vw_call_list_today' ),
-    FILTER (
-        'gold vw_call_list_today',
-        COALESCE ( 'gold vw_call_list_today'[balance], 0 ) > 0
-            || COALESCE ( 'gold vw_call_list_today'[equity], 0 ) > 0
-    ),
-    TREATAS (
-        VALUES ( 'gold dim_agente'[agente_sk] ),
-        'gold vw_call_list_today'[agente_sk]
-    )
-)
+Call List Clientes c Saldo QTD =
+CALCULATE ( [Call List Carteira Clientes QTD], OR('gold vw_call_list_today'[balance]>0,'gold vw_call_list_today'[equity]>0))
 
-Call List Last Deposit Amount USD =
-CALCULATE (
-    SUM ( 'gold vw_call_list_today'[last_deposit_amount_usd] ),
-    TREATAS (
-        VALUES ( 'gold dim_agente'[agente_sk] ),
-        'gold vw_call_list_today'[agente_sk]
-    )
-)
+Call List Last Deposit USD =
+SUM ( 'gold vw_call_list_today'[last_deposit_amount_usd] )
 ```
 
 ### Medidas HTML Content (pasta `HTML Content`)
@@ -126,7 +101,7 @@ Variáveis de tamanho: _W_Total, _W_Label, _W_Value, _H_Bar, _Gap, _Row_Margin, 
 **`Call List Por Prioridade HTML`** — 3 blocos (Alta/Média/Baixa) com dot + valor + barra relativa:
 
 ```text
-Calcula _alta, _media, _baixa via CALCULATE + TREATAS
+Calcula _alta, _media, _baixa via CALCULATE sobre `gold vw_call_list_today`
 Barra relativa ao MAX das três categorias
 Rodapé com total de pendentes
 Variáveis: _W_Total, _H_Bar, _R_Dot, _Row_Margin, _Font_*, _Gap_Dot, _Label_MB
@@ -138,7 +113,6 @@ Variáveis: _W_Total, _H_Bar, _R_Dot, _Row_Margin, _Font_*, _Gap_Dot, _Label_MB
 Cor: >= 80% cinza-azul | >= 20% amarelo | resto cinza-azul
 Variáveis: _W_Total, _W_Label, _W_Value, _H_Bar, _Gap, _Row_Margin, _Font_*
 ```
-
 ## Regra de carteira
 
 ```text

@@ -31,7 +31,7 @@ Esses relacionamentos garantem que o slicer de mes filtre cards, gauge, evolucao
 
 ## Filtros da pagina
 
-Filtros implementados:
+Filtros implementados/recomendados:
 
 | Filtro | Campo | Observacao |
 |---|---|---|
@@ -59,7 +59,7 @@ Filtros implementados:
 | Run Rate | `Team Month Run Rate USD` | Valor esperado acumulado pelo calendario de negocios. |
 | Gap Run Rate | `Team Month Gap Run Rate USD` | Realizado menos run rate; negativo indica abaixo do ritmo. |
 | Clientes Hoje | `Call List Clientes Operaram Hoje QTD`, `Call List Clientes Pendentes Hoje QTD`, `Call List Carteira Clientes QTD` | Operacao diaria da carteira. |
-| % Atendidos Hoje | `Call List  Carteira Operando Hoje %` | Percentual da carteira que operou hoje. |
+| % Atendidos Hoje | `Call List Carteira Operando Hoje %` | Percentual da carteira que operou hoje. Existe tambem a variante antiga `Call List  Carteira Operando Hoje %` com dois espacos no nome. |
 
 ### Atingimento da meta
 
@@ -103,14 +103,12 @@ Tabela/matriz com:
 - `agent_level`;
 - `Rank Chart`;
 - `Agent Month Net Deposit USD`;
-- `Agent Month Target %`;
-- `Agent Month Target USD`;
+- `Agent Month Target Deposit %` preferencialmente; `Agent Month Target %` existe, mas soma `target_pct_deposit`;
+- `Agent Month Target Deposit USD`;
 - `Agent Month Trades QTD`;
 - `Agent Month Unique Trades QTD`.
 
 Uso: identificar os agentes que mais puxam o resultado mensal. O rank usa `Agent Month Rank Net Deposit`.
-
-## Medidas DAX atuais no PBIX
 
 ### Visao Executiva
 
@@ -179,25 +177,16 @@ Call List Carteira Clientes QTD =
 COUNTROWS ( 'gold vw_call_list_today' )
 
 Call List Clientes Operaram Hoje QTD =
-COALESCE (
-    CALCULATE (
-        COUNTROWS ( 'gold vw_call_list_today' ),
-        'gold vw_call_list_today'[traded_today] = TRUE ()
-    ),
-    0
-)
+CALCULATE ( COUNTROWS ( 'gold vw_call_list_today' ), 'gold vw_call_list_today'[traded_today] = TRUE () )
 
 Call List Clientes Pendentes Hoje QTD =
-COALESCE (
-    CALCULATE (
-        COUNTROWS ( 'gold vw_call_list_today' ),
-        'gold vw_call_list_today'[is_pending_today] = TRUE ()
-    ),
-    0
-)
+CALCULATE ( COUNTROWS ( 'gold vw_call_list_today' ), 'gold vw_call_list_today'[is_pending_today] = TRUE () )
 
 Call List  Carteira Operando Hoje % =
 DIVIDE ( [Call List Clientes Operaram Hoje QTD], [Call List Carteira Clientes QTD], 0 )
+
+Call List Carteira Operando Hoje % =
+DIVIDE ( [Call List Clientes Operaram Hoje QTD], [Call List Carteira Clientes QTD] )
 ```
 
 ### Agente Mes
@@ -211,6 +200,12 @@ SUM ( 'gold vw_agent_month_performance'[target_deposit_month_usd] )
 
 Agent Month Target % =
 SUM ( 'gold vw_agent_month_performance'[target_pct_deposit] )
+
+Agent Month Target Deposit USD =
+SUM ( 'gold vw_agent_month_performance'[target_deposit_month_usd] )
+
+Agent Month Target Deposit % =
+DIVIDE ( [Agent Month Net Deposit USD], [Agent Month Target Deposit USD] )
 
 Agent Month Trades QTD =
 SUM ( 'gold vw_agent_month_performance'[total_trades_month] )
@@ -247,7 +242,7 @@ Agent Day Target Deposit USD =
 SUM ( 'gold vw_agent_day_performance'[target_deposit_day_usd] )
 
 Agent Day Target Deposit % =
-DIVIDE ( [Agent Day Net Deposit USD], [Agent Day Target Deposit USD], 0 )
+DIVIDE ( [Agent Day Net Deposit USD], [Agent Day Target Deposit USD] )
 ```
 
 ### Medidas auxiliares e HTML
@@ -263,11 +258,3 @@ DIVIDE ( [Agent Day Net Deposit USD], [Agent Day Target Deposit USD], 0 )
 | `Rank Chart` | Retorna URL de imagem para trofeus de rank 1, 2 e 3; categoria de dados `ImageUrl`. |
 | `Char Gap Run Rate` | Sinal textual `+`, vazio ou `-` conforme `Team Month Gap Run Rate USD`. |
 | `Char Gap Target Deposit` | Sinal textual auxiliar baseado em `Team Month Target Deposit %`. |
-
-## Decisoes de apresentacao
-
-- `Net Deposit Mes` e o KPI principal, porque `net_deposit = deposit - withdrawal` e a regra oficial de meta.
-- `Withdrawal Mes` e `Deposit Mes` aparecem como explicacao do net.
-- `Falta para Meta` substitui o label generico `Gap Meta` no visual, para evitar ambiguidade de sinal.
-- `Unique Trading` aparece como apoio operacional no ranking; nao substitui o unique oficial nem vira meta oficial enquanto o cliente nao fornecer metas de trade/unique.
-- O bloco de filtros pode incluir dimensoes operacionais da call list, mas status comerciais nao excluem carteira por regra MVP.
