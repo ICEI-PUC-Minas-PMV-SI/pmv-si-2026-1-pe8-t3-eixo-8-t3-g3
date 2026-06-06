@@ -14,8 +14,6 @@ O modelo combina uma star schema `gold` para analises detalhadas com views seman
 
 ## Tabelas de negocio
 
-Todas as tabelas abaixo estao em modo `Import`, com particao em estado `Ready`, carregadas via Power Query M a partir do PostgreSQL `192.168.5.149/db_brokerlab_reimport_test`.
-
 | Tabela | Colunas | Origem |
 |---|---:|---|
 | `gold dim_agente` | 13 | `gold.dim_agente` |

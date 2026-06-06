@@ -3,7 +3,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEFAULT_CODEX_PYTHON="/Users/arthurnariz/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3"
+DEFAULT_CODEX_PYTHON="/Users/arthurnariz//dependencies/python/bin/python3"
 if [[ -z "${PYTHON_BIN:-}" ]]; then
   if [[ -x "$DEFAULT_CODEX_PYTHON" ]]; then
     PYTHON_BIN="$DEFAULT_CODEX_PYTHON"
@@ -11,7 +11,7 @@ if [[ -z "${PYTHON_BIN:-}" ]]; then
     PYTHON_BIN="python3"
   fi
 fi
-DB_NAME="${DB_NAME:-db_brokerlab_reimport_test}"
+DB_NAME="${DB_NAME:-db_brokerlab}"
 PSQL_BIN="${PSQL_BIN:-psql}"
 PSQL_USER="${PSQL_USER:-postgres}"
 

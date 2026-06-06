@@ -1,9 +1,9 @@
 -- =============================================================================
 -- 00_reconciliacao.sql — Baseline e reconciliação financeira gold vs silver
--- HML: db_brokerlab_reimport_test
+-- HML: db_brokerlab
 -- Objetivo: garantir que a base está íntegra ANTES de validar Big Numbers.
 -- Espelha bd/gold/gold_checks.sql [G1] + contagens do baseline 24/24.
--- Executar: psql -U postgres -d db_brokerlab_reimport_test -f 00_reconciliacao.sql
+-- Executar: psql -U postgres -d db_brokerlab -f 00_reconciliacao.sql
 -- =============================================================================
 \pset pager off
 \echo '################ 00 — RECONCILIAÇÃO / BASELINE ################'
