@@ -39,10 +39,9 @@ Dar continuidade ao uso estratégico da TI na empresa, consolidando a cultura de
 
 ### **4.2.2 Práticas Recomendadas de Segurança**
 
-**Gestão de Senhas e Credenciais:**
-
-* As senhas de leitura dos bancos on-premises (*Sirix* e *Dynamics*) e a senha mestra do PostgreSQL devem ter no mínimo 16 caracteres, misturando letras, números e símbolos.    
+* **Gestão de Senhas e Credenciais:** As senhas de leitura dos bancos on-premises (*Sirix* e *Dynamics*) e a senha mestra do PostgreSQL devem ter no mínimo 16 caracteres, misturando letras, números e símbolos.
 * **Armazenamento Seguro:** As planilhas de configuração serão armazenadas no OneDrive corporativo, garantindo histórico de versões automático (caso alguém apague uma meta ou altere um domínio por erro).
+
 ### **4.2.3 Continuidade e Controle** 
 
 * **Backup Periódico:** Configuração de backup automatizado e semanal de toda a base histórica que alimenta o dashboard (dados consolidados do CRM e relatórios de trading).  
