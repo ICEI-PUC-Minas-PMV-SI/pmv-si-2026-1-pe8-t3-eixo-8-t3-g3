@@ -41,13 +41,8 @@ Dar continuidade ao uso estratégico da TI na empresa, consolidando a cultura de
 
 **Gestão de Senhas e Credenciais:**
 
-* As senhas de leitura dos bancos on-premises (*Sirix* e *Dynamics*) e a senha mestra do PostgreSQL devem ter no mínimo 16 caracteres, misturando letras, números e símbolos.  
-* **Troca Periódica:** Configurar um lembrete para alteração de senhas críticas a cada 90 dias.  
-* **Centralização:** Proibir o salvamento de credenciais em blocos de notas ou nas próprias planilhas de configuração do projeto (`config`/`domain`). Utilize variáveis de ambiente ou gerenciadores de senha seguros (como 1Password ou Bitwarden).  
-  **Backup Periódico dos Dados:**  
-* **O "Coração" do Negócio:** As regras de governança e metas do projeto são alimentadas por arquivos `.xlsx` (`config`/`domain`). Esses arquivos **não podem** ficar salvos localmente na máquina de um único desenvolvedor.  
-* **Armazenamento Seguro:** Mova as planilhas de configuração imediatamente para o **Google Drive** ou **OneDrive** corporativo, garantindo histórico de versões automático (caso alguém apague uma meta ou altere um domínio por erro).
-
+* As senhas de leitura dos bancos on-premises (*Sirix* e *Dynamics*) e a senha mestra do PostgreSQL devem ter no mínimo 16 caracteres, misturando letras, números e símbolos.    
+* **Armazenamento Seguro:** As planilhas de configuração serão armazenadas no OneDrive corporativo, garantindo histórico de versões automático (caso alguém apague uma meta ou altere um domínio por erro).
 ### **4.2.3 Continuidade e Controle** 
 
 * **Backup Periódico:** Configuração de backup automatizado e semanal de toda a base histórica que alimenta o dashboard (dados consolidados do CRM e relatórios de trading).  
